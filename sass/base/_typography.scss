@@ -4,25 +4,27 @@ $blockquote: $type-border !default;
 $sans: "Open Sans","Helvetica Neue", Arial, sans-serif !default;
 $serif: "PT Serif", Georgia, Times, "Times New Roman", serif !default;
 $mono: Menlo, Monaco, "Andale Mono", "lucida console", "Courier New", monospace !default;
-$heading-font-family: "Fjalla One", "Georgia", "Helvetica Neue", Arial, sans-serif !default;
+$heading-font-family: "Goudy Bookletter 1911", "Georgia", "Helvetica Neue", Arial, sans-serif !default;
 $header-title-font-family: $heading-font-family !default;
 $header-subtitle-font-family: $serif !default;
 
 .heading {
   font-family: $heading-font-family;
+  text-decoration: italic;
 }
 .sans { font-family: $sans; }
 .serif { font-family: $serif; }
 .mono { font-family: $mono; }
 
 body > header h1 {
-  font-size: 2.2em;
+//  font-size: 2.2em;
   @extend .heading;
   font-family: $header-title-font-family;
   font-weight: normal;
   line-height: 1.2em;
   margin-bottom: 0.6667em;
 }
+
 body > header h2 {
   font-family: $header-subtitle-font-family;
 }

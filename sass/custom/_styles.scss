@@ -1,10 +1,12 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
 
-$white: #FFFFFF;
+$blanc: #FFFFFF;
+$blanc: #e3e3e3;
+$dark_nav_font: #131313;
 
 html {
-	background: $white;
+	background: $blanc;
 }
 
 body {
@@ -15,7 +17,7 @@ body {
 	padding-right: 0.5em;
 
 	> header {
-		background: $white;
+		background: $blanc;
 		text-align: center;
 		padding-left: 0px;
 		padding-right: 0px;	
@@ -29,10 +31,11 @@ body {
 	}
 
 	> nav {
-		background: $white;
+		background: #dbdbdb;
 		border-bottom: 1px solid #F2F2F2;
-		padding-left: 0px;
+		padding-left: 10px;
 		padding-right: 0px;
+    color: #000;
 
 		form .search {
 			border-radius: 0.2em 0.2em 0.2em 0.2em;
@@ -46,10 +49,15 @@ body {
 
 		a {
 			font-family: $sans;
-			font-size: 0.9em;
-			padding-top: 0.3em;
+      font-weight: bold;
+			font-size: 1.0em;
+			padding-top: 0.25em;
+      letter-spacing: 0.04em;
 			line-height: 1.5em;
 		}
+    a:hover {
+      color: #2b2b2b;
+    }
 
 		li + li {
 			border-left: 0px;
@@ -61,17 +69,17 @@ body {
 	}
 
 	> div {
-		background: $white;
+		background: $blanc;
 		border-bottom: 0px;
 
 		> div {
-			background: $white;
+			background: $blanc;
 			border-right-width: 0px;
 		}
 	}
 
 	> footer {
-		background: $white;
+		background: $blanc;
 		text-shadow: none;
 		color: #AAAAAA;
 	  	padding-left: 0;
@@ -183,3 +191,59 @@ figure.code {
 aside {
 	display: none;
 }
+
+header h1.logo {
+  width: 254px;
+  height: 131px;
+  background-image: url("/images/ncollins-logo.png");
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+header h1.logo:hover {
+  background-image: url("/images/ncollins-logo.png");
+  cursor: pointer;
+  // border-bottom: 1px solid #000;
+}
+
+header h1.logo:active {
+  top: 2px;
+}
+
+#trim {
+  height: 10px;
+  background: black;
+  margin-top: 0;
+  width: 100%;
+  z-index: 50;
+  min-width: 200px;
+}
+
+header h2 {
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+// typography
+h1.entry-title {
+}
+#content .blog-index article h1 a {
+  border-bottom: 2px solid #8e8e8e;
+  padding: 0px 11px 0px 11px;
+  background: #ebebeb;
+  color: #525252;
+  font-size: 0.8em !important;
+  margin: 0;
+}
+
+#content .blog-index article h1 a:hover {
+  background: #f0f0f0;
+  color: #95004a; //wine red
+  color: #8f0054;
+}
+/* #content .blog-index article h1 a:active {
+  background: black;
+  color: #11a9c4;
+} */
+

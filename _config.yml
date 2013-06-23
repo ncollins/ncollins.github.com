@@ -3,7 +3,7 @@
 # ----------------------- #
 
 url: http://ncollins.github.io
-title: Tuples and Toroids
+title: λの花
 subtitle: promiscuous programming
 author: Nick
 simple_search: http://google.com/search
@@ -69,7 +69,7 @@ github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-twitter_user:
+twitter_user: nycgwailou
 twitter_tweet_button: true
 
 # Google +1

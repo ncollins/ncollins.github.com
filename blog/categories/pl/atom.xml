@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: pl | λの花]]></title>
+  <link href="http://ncollins.github.io/blog/categories/pl/atom.xml" rel="self"/>
+  <link href="http://ncollins.github.io/"/>
+  <updated>2013-06-23T12:58:50-04:00</updated>
+  <id>http://ncollins.github.io/</id>
+  <author>
+    <name><![CDATA[Nick]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[cerebral intercourse]]></title>
+    <link href="http://ncollins.github.io/blog/2013/06/23/cerebral-intercourse/"/>
+    <updated>2013-06-23T12:49:00-04:00</updated>
+    <id>http://ncollins.github.io/blog/2013/06/23/cerebral-intercourse</id>
+    <content type="html"><![CDATA[<p>One of my first interviews post-Hacker School was with HuffPo Labs, I
+particularly enjoyed it because of the off-the-wall programing challenge they
+gave me. Many of you will have heard of
+<a href="http://en.wikipedia.org/wiki/Brainfuck">brainfuck</a>,
+though I doubt as many of you will have actually programed in it. The HuffPo
+Labs guys asked me to write a few simple programs in the language and afterwards
+I wrote a simple <a href="https://github.com/ncollins/cerebral_intercourse">interpreter</a>.</p>
+
+<p>The rather terse syntax makes reading brainfuck programs difficult, but the
+other challenges of programing in the language can easily be explained in a
+more familiar format. The Wikipedia article provides a direct translation of
+brainfuck to C, but I&rsquo;m going to use a C-like pseudo code in this article.</p>
+
+<h3>Basic operations</h3>
+
+
+<p>Brainfuck has a &ldquo;tape&rdquo; of data, which we can think of as an array or
+linked-list that&rsquo;s infinite in both directions. Like a linked-list we can only
+move left or right one cell at a time, we can&rsquo;t &ldquo;jump&rdquo;
+to an arbitrary point in the tape. We also have the ability to increment or
+or decrement the current byte by 1. Treating the tape as an
+array, <code>data[]</code>, indexed by <code>i</code>, the following operations are permited:</p>
+
+<p><code>c
+i++; // move the data pointer one to the right
+i--; // move the data pointer one to the left
+data[i]++; // increment the value at the data pointer
+data[i]++; // decrement the value at the data pointer
+</code></p>
+
+<p>As a result even simple changes to the data require multiple instructions.
+It is assumed that we start at <code>i = 0</code>, so to add three to the byte stored at
+<code>data[2]</code> we need to do the following:</p>
+
+<p><code>c
+i++;
+i++;
+data[i]++;
+data[i]++;
+data[i]++;
+</code></p>
+
+<p>In addition brainfuck allows us to read a single byte into the current place
+in memory, and output the value of the current byte in memory.</p>
+
+<p><code>c
+data[i] = input()
+output(data[i])
+</code></p>
+
+<p>Finally, brainfuck has a single control structure, equivalent to a while loop that runs
+while the current data value is non-zero.</p>
+
+<p>```c
+while (data[i] > 0) {</p>
+
+<pre><code>...
+</code></pre>
+
+<p>}
+```</p>
+
+<h3>Count down</h3>
+
+
+<p>The &ldquo;hello world&rdquo; of brainfuck takes a single byte as input and counts down
+to zero printing each number in turn. This only requires a single data cell
+to be used, so we don&rsquo;t need to move the data pointer at all.</p>
+
+<p>```c Count Down
+data[i] = input();
+while (data[i] > 0) {</p>
+
+<pre><code>print(data[i]);
+data[i]--;
+</code></pre>
+
+<p>}
+print(data[i]);
+```</p>
+
+<h3>Counting up</h3>
+
+
+<p>Since these loops only terminate when <code>data[i]</code> equals zero, other types of
+loops have to be shoehorned into this format. To loop upwards we have to use a
+second data cell: <code>data[0]</code> holds the loop variable which we decrement and
+<code>data[1]</code> holds a byte which we increment and output.</p>
+
+<p>```c Count Up
+data[i] = input();
+while (data[i] > 0) {</p>
+
+<pre><code>data[i]--;
+i++;
+print(data[i]);
+data[i]++;
+i--;
+</code></pre>
+
+<p>}
+i++;
+print(data[i]);
+```</p>
+
+<h3>If-Else</h3>
+
+
+<p>This didn&rsquo;t come up in the interview but I felt I should try it on my own as
+if-else is a fundamental control structure of most programing languages.
+Producing an if-else with arbirary predicates seemed a little too ambitious
+so I set myself the following target: Take one number as input, print <code>1</code> if
+it&rsquo;s non-zero and <code>0</code> otherwise.</p>
+
+<p>The construction I came up with uses nested while loops and two data bytes.
+The &ldquo;equals zero&rdquo; case is simple, if the input is zero then the first while
+loop doesn&rsquo;t execute and the default value of zero is return from the second
+byte. If the input is non-zero then both while loops
+execute, the inner loop reduces <code>data[0]</code> to zero, ensuring that both while
+loops terminate, and the outer while loop increments <code>data[1]</code> before terminating.</p>
+
+<p>I&rsquo;ve written it here with named variables, <code>in = data[0]</code> and <code>out = data[1]</code>,
+for easy reading:</p>
+
+<p>```c If-Else (with named variables)
+in = input();
+out = 0;
+while (in > 0) {</p>
+
+<pre><code>while (in &gt; 0) {
+    in--;
+}
+out++;
+</code></pre>
+
+<p>}
+print(out);
+```</p>
+
+<p>It&rsquo;s then easy to replace <code>in</code>, <code>out</code> with <code>data[i]</code> and intersperse these
+with <code>i++</code>s and <code>i--</code>s to move the data pointer back and forth.</p>
+
+<p>```c If-Else
+data[i] = input()
+while (data[i] > 0) {</p>
+
+<pre><code>while (data[i] &gt; 0) {
+    data[i]--;
+}
+i++;
+data[i]++;
+i--;
+</code></pre>
+
+<p>}
+i++;
+print(data[i]);
+```</p>
+]]></content>
+  </entry>
+  
+</feed>

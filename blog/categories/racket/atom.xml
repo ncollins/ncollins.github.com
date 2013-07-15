@@ -4,7 +4,7 @@
   <title><![CDATA[Category: racket | λの花]]></title>
   <link href="http://ncollins.github.io/blog/categories/racket/atom.xml" rel="self"/>
   <link href="http://ncollins.github.io/"/>
-  <updated>2013-07-15T15:45:24-04:00</updated>
+  <updated>2013-07-15T15:59:23-04:00</updated>
   <id>http://ncollins.github.io/</id>
   <author>
     <name><![CDATA[Nick]]></name>
@@ -50,6 +50,8 @@ links correctly it is necessary to use,
 <code>scribble +m --redirect-main http://docs.racket-lang.org/ index.scrbl</code>.
 As <code>+m</code> links against local documentation by default <code>--redirect-main</code> is
 used to point to the main racket site.</p>
+
+<p>Here&rsquo;s the <a href="http://ncollins.github.io/literate-fizzbuzz/">final output</a>.</p>
 ]]></content>
   </entry>
   

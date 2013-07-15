@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: literate programming | λの花]]></title>
+  <link href="http://ncollins.github.io/blog/categories/literate-programming/atom.xml" rel="self"/>
+  <link href="http://ncollins.github.io/"/>
+  <updated>2013-07-15T15:45:24-04:00</updated>
+  <id>http://ncollins.github.io/</id>
+  <author>
+    <name><![CDATA[Nick]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Literate Racket]]></title>
+    <link href="http://ncollins.github.io/blog/2013/07/15/literate-racket/"/>
+    <updated>2013-07-15T16:00:00-04:00</updated>
+    <id>http://ncollins.github.io/blog/2013/07/15/literate-racket</id>
+    <content type="html"><![CDATA[<p>I started messing around with literate programming in Racket recently using
+the <a href="http://docs.racket-lang.org/scribble/">Scribble</a> tool. I had a little
+trouble getting the basic example working, because you need a base
+Scribble document in addition to the literate program file:</p>
+
+<p>```racket Base Scribble Document <a href="https://github.com/ncollins/literate-fizzbuzz/blob/gh-pages/index.scrbl">https://github.com/ncollins/literate-fizzbuzz/blob/gh-pages/index.scrbl</a> index.scrbl</p>
+
+<h1>lang scribble/base</h1>
+
+<p>@(require scribble/lp-include)</p>
+
+<p>@title{Fizzbuzz in Literate Racket}</p>
+
+<p>@(lp-include &ldquo;fizzbuzz.scrbl&rdquo;)
+```</p>
+
+<p>Once this template is set up the main program can be written in
+<code>fizzbuzz.scrbl</code>:</p>
+
+<p>```racket Main Program <a href="https://github.com/ncollins/literate-fizzbuzz/blob/gh-pages/fizzbuzz.scrbl">https://github.com/ncollins/literate-fizzbuzz/blob/gh-pages/fizzbuzz.scrbl</a> fizzbuzz.scrbl</p>
+
+<h1>lang scribble/lp</h1>
+
+<p>&hellip;
+```</p>
+
+<p>Finally, to compile with
+<a href="http://docs.racket-lang.org/scribble/running.html#%28part._xref-flags%29">cross-reference</a>
+links correctly it is necessary to use,
+<code>scribble +m --redirect-main http://docs.racket-lang.org/ index.scrbl</code>.
+As <code>+m</code> links against local documentation by default <code>--redirect-main</code> is
+used to point to the main racket site.</p>
+]]></content>
+  </entry>
+  
+</feed>

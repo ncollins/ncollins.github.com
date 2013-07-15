@@ -4,7 +4,7 @@
   <title><![CDATA[λの花]]></title>
   <link href="http://ncollins.github.io/atom.xml" rel="self"/>
   <link href="http://ncollins.github.io/"/>
-  <updated>2013-06-23T12:58:50-04:00</updated>
+  <updated>2013-07-15T15:45:24-04:00</updated>
   <id>http://ncollins.github.io/</id>
   <author>
     <name><![CDATA[Nick]]></name>
@@ -12,6 +12,54 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Literate Racket]]></title>
+    <link href="http://ncollins.github.io/blog/2013/07/15/literate-racket/"/>
+    <updated>2013-07-15T16:00:00-04:00</updated>
+    <id>http://ncollins.github.io/blog/2013/07/15/literate-racket</id>
+    <content type="html"><![CDATA[<p>I started messing around with literate programming in Racket recently using
+the <a href="http://docs.racket-lang.org/scribble/">Scribble</a> tool. I had a little
+trouble getting the basic example working, because you need a base
+Scribble document in addition to the literate program file:</p>
+
+<figure class='code'><figcaption><span>Base Scribble Document</span><a href='https://github.com/ncollins/literate-fizzbuzz/blob/gh-pages/index.scrbl'>index.scrbl</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='racket'><span class='line'><span class="kn">#lang scribble/base</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">@</span><span class="p">(</span><span class="k">require </span><span class="nv">scribble/lp-include</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">@title</span><span class="p">{</span><span class="nf">Fizzbuzz</span> <span class="nv">in</span> <span class="nv">Literate</span> <span class="nv">Racket</span><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">@</span><span class="p">(</span><span class="nf">lp-include</span> <span class="s">&quot;fizzbuzz.scrbl&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Once this template is set up the main program can be written in
+<code>fizzbuzz.scrbl</code>:</p>
+
+<figure class='code'><figcaption><span>Main Program</span><a href='https://github.com/ncollins/literate-fizzbuzz/blob/gh-pages/fizzbuzz.scrbl'>fizzbuzz.scrbl</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='racket'><span class='line'><span class="kn">#lang scribble/lp</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Finally, to compile with
+<a href="http://docs.racket-lang.org/scribble/running.html#%28part._xref-flags%29">cross-reference</a>
+links correctly it is necessary to use,
+<code>scribble +m --redirect-main http://docs.racket-lang.org/ index.scrbl</code>.
+As <code>+m</code> links against local documentation by default <code>--redirect-main</code> is
+used to point to the main racket site.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[cerebral intercourse]]></title>

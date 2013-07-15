@@ -36,3 +36,5 @@ links correctly it is necessary to use,
 `scribble +m --redirect-main http://docs.racket-lang.org/ index.scrbl`.
 As `+m` links against local documentation by default `--redirect-main` is
 used to point to the main racket site.
+
+Here's the [final output](http://ncollins.github.io/literate-fizzbuzz/).

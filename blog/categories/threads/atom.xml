@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Python, | λの花]]></title>
-  <link href="http://ncollins.github.io/blog/categories/python/atom.xml" rel="self"/>
+  <title><![CDATA[Category: threads | λの花]]></title>
+  <link href="http://ncollins.github.io/blog/categories/threads/atom.xml" rel="self"/>
   <link href="http://ncollins.github.io/"/>
   <updated>2014-01-13T18:06:18-05:00</updated>
   <id>http://ncollins.github.io/</id>

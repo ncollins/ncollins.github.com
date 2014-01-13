@@ -4,7 +4,7 @@
   <title><![CDATA[λの花]]></title>
   <link href="http://ncollins.github.io/atom.xml" rel="self"/>
   <link href="http://ncollins.github.io/"/>
-  <updated>2013-07-15T15:59:23-04:00</updated>
+  <updated>2014-01-13T18:06:18-05:00</updated>
   <id>http://ncollins.github.io/</id>
   <author>
     <name><![CDATA[Nick]]></name>
@@ -12,6 +12,68 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[first thoughts on using threads in Python]]></title>
+    <link href="http://ncollins.github.io/blog/2014/01/13/first-thoughts-on-using-threads-in-python/"/>
+    <updated>2014-01-13T16:24:00-05:00</updated>
+    <id>http://ncollins.github.io/blog/2014/01/13/first-thoughts-on-using-threads-in-python</id>
+    <content type="html"><![CDATA[<p>One of my aims for 2014 is to improve my grasp of concurrency.
+I&rsquo;m hoping to write concurrent programs using a various approaches
+(threads, async, channels) and take the
+<a href="https://www.coursera.org/course/posa">Pattern-Oriented Software Architectures</a>
+Coursera class which looks into these issues in the context of
+distributed systems.</p>
+
+<p>With this in mind, when I decided to take my
+<a href="https://github.com/ncollins/github_data_analysis">Github Data Analysis project</a>
+and work on <a href="https://github.com/ncollins/github_data_analysis_v2">version 2</a>,
+the first thing I decided to do was restructure the API scraper
+to handle multiple concurrent connections.</p>
+
+<p>There are a few approaches for concurrent programming in Python,
+and the async framework <a href="https://twistedmatrix.com/trac/">Twisted</a> gets a lot
+of love at Hacker School, but I decided to stick to the standard library
+and use the <a href="http://docs.python.org/2/library/threading.html">threading</a> module
+following this <a href="http://www.ibm.com/developerworks/aix/library/au-threadingpython/">IBM tutorial</a>.
+(Async support for the standard library is being worked on currently.)</p>
+
+<p>The gist of the tutorial was to use <a href="http://docs.python.org/2/library/queue.html">queues</a>
+to pass data between threads using a producer-consumer model.
+The main thread loads the initial URLs (users) into <code>download_queue</code>
+and 30 <code>FetchUrlWorker</code> threads take the URLs from the queue and fetch the data.
+The necessary data is added to <code>db_queue</code> and other URLs (repository and
+contributor listings) are added to <code>download_queue</code>. The single <code>DbWorker</code> thread collects
+the data from <code>db_queue</code> and inserts it in a SQLite
+database. The program ends when both queues are empty.</p>
+
+<p>The producer consumer model isn&rsquo;t too hard to understand but I had a few issues getting
+it to work smoothly:</p>
+
+<ul>
+<li>If an error causes a task to not be indicated as complete the queue will not empty and
+the program hangs. I ended up resorting to Pokémon exception handling to ensure that
+<code>self.download_queue.task_done()</code> was always called.</li>
+<li>Ctrl-C doesn&rsquo;t work as expected, it refuses to close child threads in case they are
+in the middle of something critical. This was a real nuisance when I was dealing with
+non-empty queues and the program was hanging. I hope to experiment with catching
+the <code>KeyboardInterrupt</code> exception in the main thread and setting variable that is
+checked by the loop in the other threads to tell them to halt.</li>
+<li><code>Thread</code> objects are initialized in the main thread, not the child thread that they create.
+I was using a <code>sqlite.Connection</code> object which can only be used in one thread by default.
+Initializing it in <code>DbWorker.__init__</code> (executed in the main thread) and using it
+in <code>DbWorker.run</code> (executed in the child thread) raised an exception and it took me a
+while to work out what the problem was.</li>
+</ul>
+
+
+<p>While it may not be my finest code I&rsquo;m pretty happy with how it has turned out so far,
+it runs far faster than the single threaded version and the producer-consumer model
+is conceptually simple even if dealing with the edge cases requires some care. I&rsquo;ve
+been dabbling with node.js recently and I&rsquo;ve been reading about Twisted so I should have
+something to compare this approach with soon!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Literate Racket]]></title>

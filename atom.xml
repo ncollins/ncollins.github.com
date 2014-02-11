@@ -4,7 +4,7 @@
   <title><![CDATA[λの花]]></title>
   <link href="http://ncollins.github.io/atom.xml" rel="self"/>
   <link href="http://ncollins.github.io/"/>
-  <updated>2014-01-13T18:06:18-05:00</updated>
+  <updated>2014-02-10T22:48:04-05:00</updated>
   <id>http://ncollins.github.io/</id>
   <author>
     <name><![CDATA[Nick]]></name>
@@ -12,6 +12,125 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A handwavey explanation of Metropolis-Hastings]]></title>
+    <link href="http://ncollins.github.io/blog/2014/02/10/a-handwavey-explanation-of-the-metropolis-hastings-algorithm/"/>
+    <updated>2014-02-10T12:34:00-05:00</updated>
+    <id>http://ncollins.github.io/blog/2014/02/10/a-handwavey-explanation-of-the-metropolis-hastings-algorithm</id>
+    <content type="html"><![CDATA[<p>I studied stochastic processes as part of my master&rsquo;s degree, but that was a while ago
+and I&rsquo;ve forgotten a lot, so when I saw a
+<a href="https://class.coursera.org/smac-001">Stastical Mechanics</a> course appear on Coursera
+I couldn&rsquo;t resist. The first week covers some methods (albeit inefficient) for calculating
+𝛑.</p>
+
+<h3>Direct sampling Monte Carlo</h3>
+
+<figure class='code'><figcaption><span>Basic Monte Carlo 𝛑 approximation</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='julia'><span class='line'><span class="k">function</span><span class="nf"> mc_pi</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">n_hits</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">N</span>
+</span><span class='line'>        <span class="n">x</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">y</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">^</span><span class="mi">2</span> <span class="o">&lt;</span> <span class="mi">1</span>
+</span><span class='line'>            <span class="n">n_hits</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="mi">4</span> <span class="o">*</span> <span class="n">n_hits</span> <span class="o">/</span> <span class="n">N</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This picks an (x, y) coordinate in the rectangle bounded by x=-1, x=1, y=-1, y=1 N times.
+Each time, we check if the point lands in the unit circle. The ratio of the areas of the
+circle and square is 𝛑/4, so we can use <code>4 * n_hits / N</code> to approximate 𝛑.</p>
+
+<p><img class="center" src="http://ncollins.github.io/images/blog/20140210-pi_mc.gif" width="512" height="256" title="'Pi via Monte Carlo'" ></p>
+
+<h3>Markov chain Monte Carlo</h3>
+
+<p>This example doesn&rsquo;t highlight the weaknesses of direct sampling, but if we are dealing
+with non-rectangular regions or higher dimensional spaces, it is less practical to implement.
+In these cases a <a href="https://en.wikipedia.org/wiki/Random_walk">random walk</a> walk may work
+better (although I&rsquo;ll stick to a 2D squares for simplicity in my examples).</p>
+
+<p>Rather than sampling points directly, we pick a sequence of points via a random walk; these
+either fall inside or outside of the unit circle and can then be used to approximate 𝛑.
+However, there is a possibility that the random walk may take us outside the sampling
+region, and the algorithm has to deal with it appropriately.</p>
+
+<p>Here is the algorithm demonstrated in the Coursera class, translated into Julia. I was pretty
+surprised when I saw it&hellip;</p>
+
+<figure class='code'><figcaption><span>Markov chain Monte Carlo 𝛑 approximation</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='julia'><span class='line'><span class="k">function</span><span class="nf"> markov_pi</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">delta</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span>
+</span><span class='line'>    <span class="n">n_hits</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">N</span>
+</span><span class='line'>        <span class="n">del_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">rand</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">delta</span>
+</span><span class='line'>        <span class="n">del_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">rand</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">delta</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">del_x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="n">del_y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">del_x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">del_y</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">^</span><span class="mi">2</span> <span class="o">&lt;</span> <span class="mi">1</span>
+</span><span class='line'>            <span class="n">n_hits</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="mi">4</span> <span class="o">*</span> <span class="n">n_hits</span> <span class="o">/</span> <span class="n">N</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When the walk lands at a point that is &ldquo;out of bounds&rdquo;, it simply pretends that our
+marker hasn&rsquo;t moved, but it still counts that as one iteration of the sequence.
+So that point is counted twice, or even more if it goes out of bounds again! (Gasp)</p>
+
+<p><img class="center" src="http://ncollins.github.io/images/blog/20140210-pi_markov.gif" width="512" height="256" title="'Pi via Monte Carlo'" ></p>
+
+<p>This really confused me for a few minutes, but I had a flash of intuition &ndash; helped by the lectures, of course :)</p>
+
+<p>When we land near an edge position there is a chance we will stay there, but this
+is conditional upon us landing there in the first place. Conveniently, the chance that
+we move out of bounds and remain at the same spot <em>precisely</em> counteracts the reduced
+probability of landing near the edges.</p>
+
+<p><img class="center" src="http://ncollins.github.io/images/blog/20140210-areas.gif" width="512" height="256" title="'Pi via Monte Carlo'" ></p>
+
+<p>The green point in the center has a &ldquo;catchment area&rdquo; of A, but upon landing,
+ we move to a new spot with probability 1. The point on the left side has half the catchment area,
+ however, if we land there we expect to stay for
+one extra move (&frac12; + &frac14; + 1/8 + &hellip;). Similarly, the point in the top right has &frac14; the catchment area, but if we land
+there we expect to remain for an extra 3 moves (&frac34; + 9/16 + 27/64 + &hellip;).</p>
+
+<p>As mentioned in the title, this was a pretty handwavey explanation, but I was impressed that
+such a simple algorithm deals corrects its own &ldquo;flaws&rdquo;.
+A more detailed explanation can be found in <a href="https://en.wikipedia.org/wiki/Metropolis-Hastings_algorithm">Wikipedia</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[first thoughts on using threads in Python]]></title>

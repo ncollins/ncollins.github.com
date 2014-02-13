@@ -88,5 +88,5 @@ one extra move (1/2 + 1/4 + 1/8 + ...). Similarly, the point in the top right ha
 there we expect to remain for an extra 3 moves (3/4 + 9/16 + 27/64 + ...).
 
 As mentioned in the title, this was a pretty handwavey explanation, but I was impressed that
-such a simple algorithm deals corrects its own "flaws".
+such a simple algorithm corrects its own "flaws".
 A more detailed explanation can be found in [Wikipedia](https://en.wikipedia.org/wiki/Metropolis-Hastings_algorithm).
